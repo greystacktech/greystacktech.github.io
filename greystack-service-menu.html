@@ -1,0 +1,438 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Greystack — IT Support Services</title>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600&family=IBM+Plex+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+–bg: #0f0f0f;
+–surface: #161616;
+–border: #2a2a2a;
+–accent: #00e5ff;
+–accent-dim: rgba(0,229,255,0.08);
+–text: #e8e8e8;
+–muted: #777;
+–mono: ‘IBM Plex Mono’, monospace;
+–sans: ‘IBM Plex Sans’, sans-serif;
+}
+
+body {
+background: var(–bg);
+color: var(–text);
+font-family: var(–sans);
+font-weight: 300;
+min-height: 100vh;
+padding: 48px 24px;
+}
+
+.page {
+max-width: 720px;
+margin: 0 auto;
+}
+
+/* Header */
+.header {
+border-left: 3px solid var(–accent);
+padding-left: 20px;
+margin-bottom: 48px;
+animation: fadeUp 0.6s ease both;
+}
+
+.header-label {
+font-family: var(–mono);
+font-size: 11px;
+letter-spacing: 0.2em;
+color: var(–accent);
+text-transform: uppercase;
+margin-bottom: 10px;
+}
+
+.header h1 {
+font-size: clamp(28px, 5vw, 42px);
+font-weight: 300;
+line-height: 1.1;
+letter-spacing: -0.02em;
+margin-bottom: 12px;
+}
+
+.header h1 strong {
+font-weight: 500;
+}
+
+.header p {
+color: var(–muted);
+font-size: 14px;
+line-height: 1.6;
+max-width: 480px;
+}
+
+/* Rate bar */
+.rate-bar {
+display: flex;
+gap: 2px;
+margin-bottom: 12px;
+animation: fadeUp 0.6s 0.1s ease both;
+}
+
+.rate-pill {
+background: var(–surface);
+border: 1px solid var(–border);
+padding: 14px 20px;
+flex: 1;
+position: relative;
+overflow: hidden;
+}
+
+.rate-pill::before {
+content: ‘’;
+position: absolute;
+top: 0; left: 0; right: 0;
+height: 2px;
+background: var(–accent);
+opacity: 0;
+transition: opacity 0.2s;
+}
+
+.rate-pill:hover::before { opacity: 1; }
+
+.rate-pill .amount {
+font-family: var(–mono);
+font-size: 22px;
+font-weight: 600;
+color: var(–accent);
+display: block;
+}
+
+.rate-pill .label {
+font-size: 11px;
+letter-spacing: 0.1em;
+text-transform: uppercase;
+color: var(–muted);
+margin-top: 4px;
+display: block;
+}
+
+/* Remote note */
+.remote-note {
+border: 1px solid var(–border);
+border-left: 3px solid rgba(0,229,255,0.4);
+padding: 12px 18px;
+font-family: var(–mono);
+font-size: 11.5px;
+color: var(–muted);
+line-height: 1.6;
+margin-bottom: 48px;
+animation: fadeUp 0.6s 0.12s ease both;
+}
+
+.remote-note span {
+color: var(–accent);
+}
+
+/* Section */
+.section {
+margin-bottom: 36px;
+animation: fadeUp 0.6s ease both;
+}
+
+.section:nth-child(4) { animation-delay: 0.15s; }
+.section:nth-child(5) { animation-delay: 0.22s; }
+.section:nth-child(6) { animation-delay: 0.29s; }
+.section:nth-child(7) { animation-delay: 0.36s; }
+
+.section-header {
+display: flex;
+align-items: center;
+gap: 12px;
+margin-bottom: 16px;
+}
+
+.section-tag {
+font-family: var(–mono);
+font-size: 10px;
+letter-spacing: 0.15em;
+text-transform: uppercase;
+color: var(–accent);
+border: 1px solid rgba(0,229,255,0.3);
+padding: 3px 8px;
+white-space: nowrap;
+}
+
+.section-line {
+height: 1px;
+background: var(–border);
+flex: 1;
+}
+
+.service-grid {
+display: grid;
+gap: 2px;
+}
+
+.service-row {
+background: var(–surface);
+border: 1px solid var(–border);
+padding: 14px 18px;
+display: flex;
+align-items: flex-start;
+gap: 14px;
+transition: background 0.15s, border-color 0.15s;
+cursor: default;
+}
+
+.service-row:hover {
+background: var(–accent-dim);
+border-color: rgba(0,229,255,0.2);
+}
+
+.service-dot {
+width: 6px;
+height: 6px;
+border-radius: 50%;
+background: var(–accent);
+margin-top: 6px;
+flex-shrink: 0;
+opacity: 0.6;
+}
+
+.service-name {
+font-size: 14px;
+font-weight: 400;
+color: var(–text);
+line-height: 1.4;
+}
+
+.service-desc {
+font-size: 12px;
+color: var(–muted);
+margin-top: 3px;
+line-height: 1.5;
+}
+
+/* Note block */
+.note {
+border: 1px solid var(–border);
+border-left: 3px solid rgba(0,229,255,0.4);
+padding: 16px 18px;
+font-size: 13px;
+color: var(–muted);
+line-height: 1.6;
+margin-bottom: 48px;
+animation: fadeUp 0.6s 0.4s ease both;
+}
+
+.note strong {
+color: var(–text);
+font-weight: 500;
+}
+
+/* Footer */
+.footer {
+border-top: 1px solid var(–border);
+padding-top: 24px;
+display: flex;
+justify-content: space-between;
+align-items: center;
+flex-wrap: wrap;
+gap: 12px;
+animation: fadeUp 0.6s 0.45s ease both;
+}
+
+.footer-contact {
+font-family: var(–mono);
+font-size: 12px;
+color: var(–muted);
+}
+
+.footer-contact span {
+color: var(–accent);
+}
+
+.footer-note {
+font-size: 11px;
+color: var(–muted);
+font-family: var(–mono);
+}
+
+@keyframes fadeUp {
+from { opacity: 0; transform: translateY(12px); }
+to { opacity: 1; transform: translateY(0); }
+}
+
+@media (max-width: 500px) {
+.rate-bar { flex-direction: column; }
+.footer { flex-direction: column; gap: 12px; align-items: flex-start; }
+}
+</style>
+
+</head>
+<body>
+<div class="page">
+
+  <div class="header">
+    <div class="header-label">// Greystack — service menu</div>
+    <h1>Local IT Support<br><strong>Done Right.</strong></h1>
+    <p>Hands-on tech help for home users and small businesses. No call centers, no runaround — just someone who actually knows what they're doing.</p>
+  </div>
+
+  <div class="rate-bar">
+    <div class="rate-pill">
+      <span class="amount">$75/hr</span>
+      <span class="label">On-Site Visit</span>
+    </div>
+    <div class="rate-pill">
+      <span class="amount">Free</span>
+      <span class="label">Initial Consult</span>
+    </div>
+  </div>
+
+  <div class="remote-note">
+    <span>Remote support</span> — available to existing clients upon request.
+  </div>
+
+  <div class="section">
+    <div class="section-header">
+      <div class="section-tag">Windows Support</div>
+      <div class="section-line"></div>
+    </div>
+    <div class="service-grid">
+      <div class="service-row">
+        <div class="service-dot"></div>
+        <div>
+          <div class="service-name">Slowness &amp; Performance Tuning</div>
+          <div class="service-desc">Diagnose and resolve sluggish systems — startup optimization, bloatware removal, resource management.</div>
+        </div>
+      </div>
+      <div class="service-row">
+        <div class="service-dot"></div>
+        <div>
+          <div class="service-name">Virus &amp; Malware Removal</div>
+          <div class="service-desc">Full scan and clean using professional tools. Includes follow-up recommendations to prevent reinfection.</div>
+        </div>
+      </div>
+      <div class="service-row">
+        <div class="service-dot"></div>
+        <div>
+          <div class="service-name">OS Reinstall &amp; Setup</div>
+          <div class="service-desc">Fresh Windows install with drivers, updates, and essential software configured properly from the start.</div>
+        </div>
+      </div>
+      <div class="service-row">
+        <div class="service-dot"></div>
+        <div>
+          <div class="service-name">Driver &amp; Update Issues</div>
+          <div class="service-desc">Resolve failed updates, missing drivers, and compatibility problems.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-header">
+      <div class="section-tag">Networking</div>
+      <div class="section-line"></div>
+    </div>
+    <div class="service-grid">
+      <div class="service-row">
+        <div class="service-dot"></div>
+        <div>
+          <div class="service-name">Wi-Fi Troubleshooting</div>
+          <div class="service-desc">Diagnose dead zones, dropped connections, and slow speeds. Router placement and configuration advice.</div>
+        </div>
+      </div>
+      <div class="service-row">
+        <div class="service-dot"></div>
+        <div>
+          <div class="service-name">Router &amp; Modem Setup</div>
+          <div class="service-desc">New equipment setup, ISP configuration, guest networks, and basic security hardening.</div>
+        </div>
+      </div>
+      <div class="service-row">
+        <div class="service-dot"></div>
+        <div>
+          <div class="service-name">Home Network Organization</div>
+          <div class="service-desc">Device management, parental controls, network-wide ad blocking, and general cleanup.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-header">
+      <div class="section-tag">Hardware</div>
+      <div class="section-line"></div>
+    </div>
+    <div class="service-grid">
+      <div class="service-row">
+        <div class="service-dot"></div>
+        <div>
+          <div class="service-name">RAM &amp; SSD Upgrades</div>
+          <div class="service-desc">Source and install compatible components. One of the best bang-for-buck upgrades for older machines.</div>
+        </div>
+      </div>
+      <div class="service-row">
+        <div class="service-dot"></div>
+        <div>
+          <div class="service-name">Peripheral Setup</div>
+          <div class="service-desc">Printers, monitors, external drives, webcams — properly configured and tested.</div>
+        </div>
+      </div>
+      <div class="service-row">
+        <div class="service-dot"></div>
+        <div>
+          <div class="service-name">Data Backup &amp; Transfer</div>
+          <div class="service-desc">Set up reliable local or cloud backup. Migrate data between old and new machines.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-header">
+      <div class="section-tag">Education &amp; Guidance</div>
+      <div class="section-line"></div>
+    </div>
+    <div class="service-grid">
+      <div class="service-row">
+        <div class="service-dot"></div>
+        <div>
+          <div class="service-name">Device Walkthroughs</div>
+          <div class="service-desc">One-on-one sessions for laptops, tablets, and smartphones. Learn at your pace, no judgment.</div>
+        </div>
+      </div>
+      <div class="service-row">
+        <div class="service-dot"></div>
+        <div>
+          <div class="service-name">Security &amp; Scam Awareness</div>
+          <div class="service-desc">Recognize phishing, set up strong passwords, and understand what to actually worry about online.</div>
+        </div>
+      </div>
+      <div class="service-row">
+        <div class="service-dot"></div>
+        <div>
+          <div class="service-name">Email, Cloud &amp; Password Setup</div>
+          <div class="service-desc">Gmail, iCloud, OneDrive, password managers — properly set up and explained so you're not locked out.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="note">
+    <strong>Not sure if your issue is on the list?</strong> Reach out anyway. If it's something I can't handle, I'll tell you straight and point you in the right direction — no charge for that conversation.
+  </div>
+
+  <div class="footer">
+    <div class="footer-contact">
+      Contact: <span>greystacktech@gmail.com</span>
+    </div>
+    <div class="footer-note">// Serving the Charleston, SC Area</div>
+  </div>
+
+</div>
+</body>
+</html>
