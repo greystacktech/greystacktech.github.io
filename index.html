@@ -3,274 +3,614 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Greystack — IT Support Services</title>
-<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600&family=IBM+Plex+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<title>GREYSTACK // IT SUPPORT SERVICES</title>
+<link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Orbitron:wght@400;700;900&display=swap" rel="stylesheet">
 <style>
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
   :root {
-    --bg: #0f0f0f;
-    --surface: #161616;
-    --border: #2a2a2a;
-    --accent: #00e5ff;
-    --accent-dim: rgba(0,229,255,0.08);
-    --text: #e8e8e8;
-    --muted: #777;
-    --mono: 'IBM Plex Mono', monospace;
-    --sans: 'IBM Plex Sans', sans-serif;
+    --bg: #0d1f2d;
+    --surface: #152636;
+    --surface2: #1b3045;
+    --border: #2a4a62;
+    --border-bright: #3a6080;
+    --cyan: #00e5ff;
+    --cyan-dim: rgba(0,229,255,0.12);
+    --cyan-mid: rgba(0,229,255,0.22);
+    --magenta: #ff4da6;
+    --magenta-dim: rgba(255,77,166,0.12);
+    --yellow: #ffe066;
+    --green: #39ff85;
+    --green-dim: rgba(57,255,133,0.12);
+    --text: #dff4fb;
+    --muted: #93c9db;
+    --dim: #5a8fa3;
+    --mono: 'Share Tech Mono', monospace;
+    --display: 'Orbitron', monospace;
+    --sans: 'Segoe UI', system-ui, -apple-system, sans-serif;
   }
+
+  html { background: #0d1f2d; }
 
   body {
     background: var(--bg);
     color: var(--text);
-    font-family: var(--sans);
-    font-weight: 300;
+    font-family: var(--mono);
     min-height: 100vh;
-    padding: 48px 24px;
+    padding: 0;
+    position: relative;
+    overflow-x: hidden;
+    cursor: default;
   }
 
+  /* CRT scanline overlay removed for readability */
+
+  /* Vignette */
+  body::after {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background: radial-gradient(ellipse at center, transparent 60%, rgba(0,0,0,0.7) 100%);
+    pointer-events: none;
+    z-index: 999;
+  }
+
+  /* Grid background */
+  .grid-bg {
+    position: fixed;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(0,245,255,0.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(0,245,255,0.03) 1px, transparent 1px);
+    background-size: 32px 32px;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  /* Boot screen */
+  .boot-screen {
+    position: fixed;
+    inset: 0;
+    background: #0d1f2d;
+    z-index: 9000;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 48px;
+    animation: bootFade 0.4s 2.8s ease forwards;
+  }
+
+  .boot-line {
+    font-family: var(--mono);
+    font-size: 12px;
+    color: var(--green);
+    line-height: 1.8;
+    opacity: 0;
+  }
+
+  .boot-line:nth-child(1) { animation: bootLine 0.1s 0.1s forwards; }
+  .boot-line:nth-child(2) { animation: bootLine 0.1s 0.4s forwards; }
+  .boot-line:nth-child(3) { animation: bootLine 0.1s 0.7s forwards; }
+  .boot-line:nth-child(4) { animation: bootLine 0.1s 1.0s forwards; }
+  .boot-line:nth-child(5) { animation: bootLine 0.1s 1.3s forwards; }
+  .boot-line:nth-child(6) { animation: bootLine 0.1s 1.6s forwards; color: var(--cyan); }
+  .boot-line:nth-child(7) { animation: bootLine 0.1s 1.9s forwards; color: var(--cyan); }
+  .boot-line:nth-child(8) { animation: bootLine 0.1s 2.2s forwards; color: var(--yellow); }
+
+  /* Top chrome */
+  .chrome-top {
+    background: var(--surface);
+    border-bottom: 1px solid var(--border-bright);
+    position: relative;
+    z-index: 10;
+    animation: fadeIn 0.3s 3s ease both;
+  }
+
+  .chrome-top::after {
+    content: '';
+    position: absolute;
+    bottom: -2px;
+    left: 0; right: 0;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--cyan), transparent);
+    opacity: 0.4;
+  }
+
+  .chrome-row1 {
+    padding: 6px 28px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid var(--border);
+    font-size: 9px;
+    color: var(--muted);
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+  }
+
+  .chrome-row1 span { color: var(--green); }
+
+  .chrome-row2 {
+    padding: 10px 28px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .chrome-brand {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+  }
+
+  .brand-icon {
+    width: 28px;
+    height: 28px;
+    border: 1px solid var(--cyan);
+    display: grid;
+    place-items: center;
+    position: relative;
+  }
+
+  .brand-icon::before {
+    content: '>';
+    font-size: 14px;
+    color: var(--cyan);
+    text-shadow: 0 0 8px var(--cyan);
+  }
+
+  .brand-name {
+    font-family: var(--display);
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--cyan);
+    letter-spacing: 0.12em;
+    text-shadow: 0 0 20px rgba(0,245,255,0.5);
+  }
+
+  .brand-ver {
+    font-size: 9px;
+    color: var(--muted);
+    letter-spacing: 0.1em;
+    margin-top: 2px;
+  }
+
+  .chrome-status {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+
+  .status-pill {
+    border: 1px solid var(--green);
+    padding: 3px 10px;
+    font-size: 9px;
+    color: var(--green);
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    text-shadow: 0 0 6px var(--green);
+    animation: statusPulse 2s infinite;
+  }
+
+  .chrome-email {
+    font-size: 10px;
+    color: var(--muted);
+    letter-spacing: 0.05em;
+  }
+
+  .chrome-email a {
+    color: var(--cyan);
+    text-decoration: none;
+    transition: text-shadow 0.2s;
+  }
+
+  .chrome-email a:hover { text-shadow: 0 0 8px var(--cyan); }
+
+  /* Page */
   .page {
-    max-width: 720px;
+    max-width: 820px;
     margin: 0 auto;
+    padding: 40px 28px 80px;
+    position: relative;
+    z-index: 1;
+    animation: fadeIn 0.3s 3.1s ease both;
   }
 
   /* Header */
   .header {
-    border-left: 3px solid var(--accent);
-    padding-left: 20px;
-    margin-bottom: 48px;
-    animation: fadeUp 0.6s ease both;
+    margin-bottom: 40px;
+    border: 1px solid var(--border-bright);
+    padding: 28px;
+    position: relative;
+    background: var(--surface);
   }
 
-  .header-label {
-    font-family: var(--mono);
-    font-size: 11px;
-    letter-spacing: 0.2em;
-    color: var(--accent);
-    text-transform: uppercase;
-    margin-bottom: 10px;
+  .header::before {
+    content: '';
+    position: absolute;
+    top: -1px; left: 20px; right: 20px;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, var(--cyan), var(--magenta), var(--cyan), transparent);
   }
+
+  .header::after {
+    content: '';
+    position: absolute;
+    bottom: -1px; left: 20px; right: 20px;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--cyan), transparent);
+    opacity: 0.4;
+  }
+
+  .header-path {
+    font-size: 10px;
+    color: var(--muted);
+    letter-spacing: 0.1em;
+    margin-bottom: 20px;
+  }
+
+  .header-path span { color: var(--cyan); }
 
   .header h1 {
-    font-size: clamp(28px, 5vw, 42px);
-    font-weight: 300;
+    font-family: var(--display);
+    font-size: clamp(22px, 5vw, 40px);
+    font-weight: 900;
     line-height: 1.1;
-    letter-spacing: -0.02em;
-    margin-bottom: 12px;
+    letter-spacing: 0.05em;
+    margin-bottom: 16px;
+    color: var(--text);
+    text-transform: uppercase;
   }
 
-  .header h1 strong { font-weight: 500; }
+  .header h1 .highlight {
+    color: var(--cyan);
+    text-shadow: 0 0 20px rgba(0,245,255,0.4);
+  }
 
-  .header p {
+  .header h1 .magenta {
+    color: var(--magenta);
+    text-shadow: 0 0 20px rgba(255,0,110,0.4);
+  }
+
+  .header-desc {
+    font-size: 13px;
     color: var(--muted);
-    font-size: 14px;
-    line-height: 1.6;
-    max-width: 480px;
+    line-height: 1.7;
+    max-width: 520px;
+    margin-bottom: 16px;
+    border-left: 2px solid var(--border-bright);
+    padding-left: 14px;
   }
 
-  /* Rate bar */
-  .rate-bar {
-    display: flex;
-    gap: 2px;
-    margin-bottom: 12px;
-    animation: fadeUp 0.6s 0.1s ease both;
+  .header-contact {
+    font-size: 13px;
+    border-left: 2px solid var(--border-bright);
+    padding-left: 14px;
   }
 
-  .rate-pill {
+  .header-contact .label { color: var(--muted); }
+
+  .header-contact a {
+    color: var(--cyan);
+    text-decoration: none;
+    font-weight: 700;
+    transition: text-shadow 0.2s;
+  }
+
+  .header-contact a:hover { text-shadow: 0 0 10px var(--cyan); }
+
+  /* Pricing */
+  .pricing {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 4px;
+    margin-bottom: 4px;
+  }
+
+  .rate-card {
     background: var(--surface);
-    border: 1px solid var(--border);
-    padding: 14px 20px;
-    flex: 1;
+    border: 1px solid var(--border-bright);
+    padding: 20px 22px;
+    cursor: pointer;
     position: relative;
     overflow: hidden;
-    cursor: pointer;
-    transition: background 0.15s, border-color 0.15s;
+    transition: border-color 0.2s;
   }
 
-  .rate-pill::before {
+  .rate-card::before {
     content: '';
     position: absolute;
     top: 0; left: 0; right: 0;
     height: 2px;
-    background: var(--accent);
-    opacity: 0;
-    transition: opacity 0.2s;
+    background: linear-gradient(90deg, var(--cyan), var(--magenta));
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 0.3s ease;
   }
 
-  .rate-pill:hover::before { opacity: 1; }
-  .rate-pill:hover { background: var(--accent-dim); border-color: rgba(0,229,255,0.2); }
+  .rate-card:hover { border-color: var(--cyan); }
+  .rate-card:hover::before { transform: scaleX(1); }
 
-  .rate-pill .amount {
-    font-family: var(--mono);
-    font-size: 22px;
-    font-weight: 600;
-    color: var(--accent);
-    display: block;
+  .rate-card.primary {
+    background: var(--surface2);
+    border-color: rgba(0,245,255,0.2);
   }
 
-  .rate-pill .label {
-    font-size: 11px;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-    color: var(--muted);
-    margin-top: 4px;
-    display: block;
-  }
-
-  .rate-pill .click-hint {
-    font-family: var(--mono);
+  .rate-index {
     font-size: 9px;
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
-    color: rgba(0,229,255,0.4);
-    margin-top: 8px;
-    display: block;
-    transition: color 0.2s;
+    color: var(--dim);
+    letter-spacing: 0.15em;
+    margin-bottom: 10px;
   }
 
-  .rate-pill:hover .click-hint { color: var(--accent); }
+  .rate-amount {
+    font-family: var(--display);
+    font-size: 30px;
+    font-weight: 700;
+    color: var(--cyan);
+    text-shadow: 0 0 15px rgba(0,245,255,0.4);
+    line-height: 1;
+    margin-bottom: 6px;
+    letter-spacing: 0.05em;
+  }
+
+  .rate-label {
+    font-size: 10px;
+    color: var(--muted);
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    margin-bottom: 16px;
+  }
+
+  .rate-cta {
+    font-size: 9px;
+    color: rgba(0,245,255,0.4);
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    transition: color 0.2s, text-shadow 0.2s;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .rate-cta::before { content: '$ ./schedule'; color: var(--green); opacity: 0.6; }
+  .rate-card:hover .rate-cta::before { opacity: 1; }
+  .rate-card:hover .rate-cta { color: var(--cyan); text-shadow: 0 0 6px var(--cyan); }
 
   /* Remote note */
   .remote-note {
+    background: #1e3a52;
     border: 1px solid var(--border);
-    border-left: 3px solid rgba(0,229,255,0.4);
-    padding: 12px 18px;
-    font-family: var(--mono);
-    font-size: 11.5px;
+    border-left: 2px solid var(--magenta);
+    padding: 10px 16px;
+    font-family: var(--sans);
+    font-size: 13px;
+    font-weight: 400;
     color: var(--muted);
-    line-height: 1.6;
-    margin-bottom: 48px;
-    animation: fadeUp 0.6s 0.12s ease both;
+    line-height: 1.65;
+    margin-bottom: 40px;
+    position: relative;
+    z-index: 1001;
   }
 
-  .remote-note span { color: var(--accent); }
+  .remote-note .hl { color: var(--magenta); text-shadow: 0 0 6px rgba(255,77,166,0.4); font-weight: 700; }
 
   /* Section */
   .section {
-    margin-bottom: 36px;
-    animation: fadeUp 0.6s ease both;
+    margin-bottom: 28px;
   }
-
-  .section:nth-child(4) { animation-delay: 0.15s; }
-  .section:nth-child(5) { animation-delay: 0.22s; }
-  .section:nth-child(6) { animation-delay: 0.29s; }
-  .section:nth-child(7) { animation-delay: 0.36s; }
 
   .section-header {
     display: flex;
     align-items: center;
-    gap: 12px;
-    margin-bottom: 16px;
+    gap: 0;
+    margin-bottom: 2px;
+    background: #1b3045;
+    border: 1px solid var(--border-bright);
+    border-bottom: none;
+    padding: 0;
+    overflow: hidden;
+    position: relative;
+    z-index: 1001;
   }
 
-  .section-tag {
-    font-family: var(--mono);
+  .section-index {
+    background: var(--cyan);
+    color: #020408;
+    font-family: var(--display);
     font-size: 10px;
-    letter-spacing: 0.15em;
-    text-transform: uppercase;
-    color: var(--accent);
-    border: 1px solid rgba(0,229,255,0.3);
-    padding: 3px 8px;
-    white-space: nowrap;
+    font-weight: 700;
+    padding: 9px 14px;
+    letter-spacing: 0.1em;
+    flex-shrink: 0;
   }
 
-  .section-line {
-    height: 1px;
-    background: var(--border);
+  .section-title-wrap {
+    padding: 9px 16px;
     flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-left: 1px solid var(--border-bright);
   }
 
-  .service-grid { display: grid; gap: 2px; }
+  .section-name {
+    font-size: 10px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--cyan);
+  }
+
+  .section-count {
+    font-size: 9px;
+    color: var(--dim);
+    letter-spacing: 0.1em;
+  }
+
+  .service-grid { display: grid; gap: 1px; }
 
   .service-row {
-    background: var(--surface);
+    background: #1e3a52;
     border: 1px solid var(--border);
-    padding: 14px 18px;
-    display: flex;
-    align-items: flex-start;
-    gap: 14px;
+    border-top: none;
+    padding: 13px 18px 13px 16px;
+    display: grid;
+    grid-template-columns: 28px 1fr;
+    gap: 10px;
+    align-items: start;
     transition: background 0.15s, border-color 0.15s;
-    cursor: default;
+    position: relative;
+    z-index: 1001;
+  }
+
+  .service-row::after {
+    content: '';
+    position: absolute;
+    left: 0; top: 0; bottom: 0;
+    width: 2px;
+    background: var(--cyan);
+    transform: scaleY(0);
+    transform-origin: top;
+    transition: transform 0.2s ease;
   }
 
   .service-row:hover {
-    background: var(--accent-dim);
-    border-color: rgba(0,229,255,0.2);
+    background: var(--cyan-dim);
+    border-color: rgba(0,245,255,0.15);
   }
 
-  .service-dot {
-    width: 6px;
-    height: 6px;
-    border-radius: 50%;
-    background: var(--accent);
-    margin-top: 6px;
-    flex-shrink: 0;
-    opacity: 0.6;
+  .service-row:hover::after { transform: scaleY(1); }
+
+  .service-prefix {
+    font-size: 11px;
+    color: var(--dim);
+    padding-top: 2px;
+    transition: color 0.15s;
+    text-align: center;
   }
+
+  .service-row:hover .service-prefix { color: var(--cyan); }
 
   .service-name {
+    font-family: var(--sans);
     font-size: 14px;
-    font-weight: 400;
+    font-weight: 600;
     color: var(--text);
-    line-height: 1.4;
+    line-height: 1.3;
+    margin-bottom: 5px;
+    letter-spacing: 0.01em;
   }
 
   .service-desc {
-    font-size: 12px;
-    color: var(--muted);
-    margin-top: 3px;
-    line-height: 1.5;
-  }
-
-  /* Note block */
-  .note {
-    border: 1px solid var(--border);
-    border-left: 3px solid rgba(0,229,255,0.4);
-    padding: 16px 18px;
+    font-family: var(--sans);
     font-size: 13px;
+    font-weight: 400;
     color: var(--muted);
-    line-height: 1.6;
-    margin-bottom: 48px;
-    animation: fadeUp 0.6s 0.4s ease both;
+    line-height: 1.65;
   }
 
-  .note strong { color: var(--text); font-weight: 500; }
+  /* Note */
+  .note {
+    background: #1e3a52;
+    border: 1px solid var(--border-bright);
+    padding: 16px 18px;
+    font-family: var(--sans);
+    font-size: 13px;
+    font-weight: 400;
+    color: var(--muted);
+    line-height: 1.7;
+    margin-bottom: 48px;
+    position: relative;
+    z-index: 1001;
+  }
+
+  .note::before {
+    content: '// NOTE';
+    display: block;
+    font-size: 9px;
+    color: var(--yellow);
+    letter-spacing: 0.2em;
+    margin-bottom: 8px;
+  }
+
+  .note strong { color: var(--text); font-weight: 700; }
 
   /* Footer */
   .footer {
-    border-top: 1px solid var(--border);
-    padding-top: 24px;
+    border-top: 1px solid var(--border-bright);
+    padding-top: 20px;
     display: flex;
     justify-content: space-between;
-    align-items: center;
+    align-items: flex-end;
     flex-wrap: wrap;
-    gap: 12px;
-    animation: fadeUp 0.6s 0.45s ease both;
+    gap: 16px;
+    position: relative;
   }
 
-  .footer-contact {
-    font-family: var(--mono);
-    font-size: 16px;
+  .footer::before {
+    content: '';
+    position: absolute;
+    top: -2px; left: 0; right: 0;
+    height: 1px;
+    background: linear-gradient(90deg, var(--cyan), var(--magenta), var(--cyan));
+    opacity: 0.3;
+  }
+
+  .footer-left {}
+
+  .footer-label {
+    font-size: 9px;
+    color: var(--dim);
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    margin-bottom: 6px;
+  }
+
+  .footer-email {
+    font-size: 13px;
     color: var(--muted);
   }
 
-  .footer-contact span { color: var(--accent); }
+  .footer-email .label { color: var(--muted); }
 
-  .footer-note {
-    font-size: 11px;
-    color: var(--muted);
-    font-family: var(--mono);
+  .footer-email a {
+    color: var(--cyan);
+    text-decoration: none;
+    font-weight: 700;
+    transition: text-shadow 0.2s;
   }
 
-  /* ── MODAL ── */
+  .footer-email a:hover { text-shadow: 0 0 8px var(--cyan); }
+
+  .footer-right { text-align: right; }
+
+  .footer-brand {
+    font-family: var(--display);
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--cyan);
+    letter-spacing: 0.15em;
+    text-shadow: 0 0 15px rgba(0,245,255,0.4);
+    display: block;
+    margin-bottom: 4px;
+  }
+
+  .footer-region {
+    font-size: 9px;
+    color: var(--dim);
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+  }
+
+  /* Modal */
   .modal-overlay {
     position: fixed;
     inset: 0;
-    background: rgba(0,0,0,0.75);
+    background: rgba(13,31,45,0.93);
     display: flex;
     align-items: center;
     justify-content: center;
-    z-index: 999;
+    z-index: 5000;
     padding: 24px;
     opacity: 0;
     pointer-events: none;
@@ -284,147 +624,265 @@
 
   .modal {
     background: var(--surface);
-    border: 1px solid var(--border);
-    border-top: 3px solid var(--accent);
+    border: 1px solid var(--border-bright);
     max-width: 460px;
     width: 100%;
-    padding: 32px;
-    transform: translateY(16px);
+    padding: 0;
+    transform: translateY(16px) scale(0.98);
     transition: transform 0.25s ease;
+    position: relative;
+    overflow: hidden;
   }
 
-  .modal-overlay.open .modal { transform: translateY(0); }
+  .modal-overlay.open .modal { transform: translateY(0) scale(1); }
 
-  .modal-tag {
-    font-family: var(--mono);
-    font-size: 10px;
+  .modal::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, var(--cyan), var(--magenta), var(--cyan));
+  }
+
+  .modal-titlebar {
+    background: var(--surface2);
+    border-bottom: 1px solid var(--border-bright);
+    padding: 10px 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .modal-titlebar-label {
+    font-size: 9px;
+    color: var(--cyan);
     letter-spacing: 0.2em;
     text-transform: uppercase;
-    color: var(--accent);
-    margin-bottom: 12px;
   }
 
+  .modal-titlebar-dots {
+    display: flex;
+    gap: 5px;
+  }
+
+  .modal-titlebar-dots span {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    border: 1px solid var(--border-bright);
+  }
+
+  .modal-titlebar-dots span:nth-child(1) { border-color: var(--magenta); }
+  .modal-titlebar-dots span:nth-child(2) { border-color: var(--yellow); }
+  .modal-titlebar-dots span:nth-child(3) { border-color: var(--green); }
+
+  .modal-body { padding: 28px; }
+
+  .modal-cmd {
+    font-size: 11px;
+    color: var(--green);
+    margin-bottom: 16px;
+    letter-spacing: 0.05em;
+  }
+
+  .modal-cmd span { color: var(--cyan); }
+
   .modal h2 {
-    font-size: 22px;
-    font-weight: 500;
-    letter-spacing: -0.02em;
-    margin-bottom: 8px;
+    font-family: var(--display);
+    font-size: 18px;
+    font-weight: 700;
     color: var(--text);
+    margin-bottom: 10px;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
   }
 
   .modal p {
-    font-size: 13px;
+    font-size: 11px;
     color: var(--muted);
-    line-height: 1.6;
+    line-height: 1.7;
     margin-bottom: 24px;
-    font-family: var(--mono);
   }
 
   .modal-btn {
     display: block;
     width: 100%;
-    background: var(--accent);
-    color: #0f0f0f;
-    font-family: var(--mono);
-    font-size: 12px;
-    font-weight: 600;
-    letter-spacing: 0.12em;
+    background: var(--cyan);
+    color: #020408;
+    font-family: var(--display);
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.15em;
     text-transform: uppercase;
     text-align: center;
     padding: 14px;
     border: none;
     cursor: pointer;
     text-decoration: none;
-    margin-bottom: 10px;
-    transition: opacity 0.15s;
+    margin-bottom: 8px;
+    transition: box-shadow 0.2s;
   }
 
-  .modal-btn:hover { opacity: 0.85; }
+  .modal-btn:hover { box-shadow: 0 0 20px rgba(0,245,255,0.4); }
 
   .modal-close {
     display: block;
     width: 100%;
     background: none;
-    border: 1px solid var(--border);
+    border: 1px solid var(--border-bright);
     color: var(--muted);
     font-family: var(--mono);
-    font-size: 11px;
-    letter-spacing: 0.1em;
+    font-size: 10px;
+    letter-spacing: 0.12em;
     text-transform: uppercase;
     padding: 10px;
     cursor: pointer;
     transition: border-color 0.15s, color 0.15s;
   }
 
-  .modal-close:hover { border-color: var(--muted); color: var(--text); }
+  .modal-close:hover { border-color: var(--magenta); color: var(--magenta); }
+
+  /* Animations */
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
 
   @keyframes fadeUp {
-    from { opacity: 0; transform: translateY(12px); }
+    from { opacity: 0; transform: translateY(10px); }
     to { opacity: 1; transform: translateY(0); }
   }
 
-  @media (max-width: 500px) {
-    .rate-bar { flex-direction: column; }
-    .footer { flex-direction: column; gap: 12px; align-items: flex-start; }
+  @keyframes bootLine {
+    to { opacity: 1; }
+  }
+
+  @keyframes bootFade {
+    to { opacity: 0; pointer-events: none; }
+  }
+
+  @keyframes statusPulse {
+    0%, 100% { opacity: 1; box-shadow: 0 0 6px var(--green); }
+    50% { opacity: 0.5; box-shadow: none; }
+  }
+
+  @media (max-width: 540px) {
+    .chrome-row1 { padding: 6px 16px; font-size: 8px; }
+    .chrome-row2 { padding: 10px 16px; }
+    .brand-name { font-size: 13px; }
+    .chrome-email { display: none; }
+    .page { padding: 28px 14px 60px; }
+    .pricing { grid-template-columns: 1fr; }
+    .footer { flex-direction: column; align-items: flex-start; }
+    .footer-right { text-align: left; }
   }
 </style>
 </head>
 <body>
+
+<div class="grid-bg"></div>
+
+<!-- Boot Screen -->
+<div class="boot-screen">
+  <div class="boot-line">GREYSTACK OS v2.5.1 — INITIALIZING...</div>
+  <div class="boot-line">[ OK ] Loading kernel modules...</div>
+  <div class="boot-line">[ OK ] Mounting filesystems...</div>
+  <div class="boot-line">[ OK ] Starting network services...</div>
+  <div class="boot-line">[ OK ] Security protocols active...</div>
+  <div class="boot-line">» Loading service catalog...</div>
+  <div class="boot-line">» Establishing connection: Charleston, SC...</div>
+  <div class="boot-line">[ READY ] All systems operational. Welcome.</div>
+</div>
+
+<!-- Top Chrome -->
+<div class="chrome-top">
+  <div class="chrome-row1">
+    <span>root@greystack:~$ ./services --list</span>
+    <span>SYS:<span style="color:var(--green)">ONLINE</span> &nbsp;|&nbsp; LOC:CHS-SC &nbsp;|&nbsp; EST.2025</span>
+  </div>
+  <div class="chrome-row2">
+    <div class="chrome-brand">
+      <div class="brand-icon"></div>
+      <div>
+        <div class="brand-name">GREYSTACK</div>
+        <div class="brand-ver">// IT SUPPORT SERVICES v1.0</div>
+      </div>
+    </div>
+    <div class="chrome-status">
+      <div class="status-pill">● SERVICES ONLINE</div>
+      <div class="chrome-email"><a href="mailto:greystacktech@gmail.com">greystacktech@gmail.com</a></div>
+    </div>
+  </div>
+</div>
+
 <div class="page">
 
+  <!-- Header -->
   <div class="header">
-    <div class="header-label">// Greystack — service menu</div>
-    <h1>Local IT Support<br><strong>Done Right.</strong></h1>
-    <p>Hands-on tech help for home users and small businesses. No call centers, no runaround — just someone who actually knows what they're doing.</p>
-    <p style="margin-top: 12px; font-family: var(--mono); font-size: 16px;"><strong style="color: var(--muted);">Contact:</strong> <strong style="color: var(--accent);"><a href="mailto:greystacktech@gmail.com" style="color: var(--accent); text-decoration: none;">greystacktech@gmail.com</a></strong></p>
+    <div class="header-path">
+      <span>~/greystack</span>/services/charleston-sc $ cat README.md
+    </div>
+    <h1>
+      LOCAL IT SUPPORT.<br>
+      <span class="highlight">DONE</span> <span class="magenta">RIGHT.</span>
+    </h1>
+    <p class="header-desc">Hands-on tech help for home users and small businesses. No call centers, no runaround — just someone who actually knows what they're doing.</p>
+    <p class="header-contact"><span class="label">Contact: </span><a href="mailto:greystacktech@gmail.com">greystacktech@gmail.com</a></p>
   </div>
 
-  <div class="rate-bar">
-    <div class="rate-pill" onclick="openModal('onsite')">
-      <span class="amount">$75/hr</span>
-      <span class="label">On-Site Visit</span>
-      <span class="click-hint">// tap to schedule</span>
+  <!-- Pricing -->
+  <div class="pricing">
+    <div class="rate-card primary" onclick="openModal('onsite')">
+      <div class="rate-index">// RATE_01</div>
+      <div class="rate-amount">$75/hr</div>
+      <div class="rate-label">On-Site Visit</div>
+      <div class="rate-cta"></div>
     </div>
-    <div class="rate-pill" onclick="openModal('consult')">
-      <span class="amount">Free</span>
-      <span class="label">Initial Consult</span>
-      <span class="click-hint">// tap to schedule</span>
+    <div class="rate-card" onclick="openModal('consult')">
+      <div class="rate-index">// RATE_02</div>
+      <div class="rate-amount">FREE</div>
+      <div class="rate-label">Initial Consult</div>
+      <div class="rate-cta"></div>
     </div>
   </div>
 
   <div class="remote-note">
-    <span>Remote support</span> — available to existing clients upon request.
+    <span class="hl">REMOTE_SUPPORT</span> — available to existing clients upon request. Contact to enable access.
   </div>
 
+  <!-- Windows Support -->
   <div class="section">
     <div class="section-header">
-      <div class="section-tag">Windows Support</div>
-      <div class="section-line"></div>
+      <div class="section-index">01</div>
+      <div class="section-title-wrap">
+        <span class="section-name">Windows Support</span>
+        <span class="section-count">4 services</span>
+      </div>
     </div>
     <div class="service-grid">
       <div class="service-row">
-        <div class="service-dot"></div>
+        <div class="service-prefix">[01]</div>
         <div>
           <div class="service-name">Slowness &amp; Performance Tuning</div>
           <div class="service-desc">Diagnose and resolve sluggish systems — startup optimization, bloatware removal, resource management.</div>
         </div>
       </div>
       <div class="service-row">
-        <div class="service-dot"></div>
+        <div class="service-prefix">[02]</div>
         <div>
           <div class="service-name">Virus &amp; Malware Removal</div>
           <div class="service-desc">Full scan and clean using professional tools. Includes follow-up recommendations to prevent reinfection.</div>
         </div>
       </div>
       <div class="service-row">
-        <div class="service-dot"></div>
+        <div class="service-prefix">[03]</div>
         <div>
           <div class="service-name">OS Reinstall &amp; Setup</div>
           <div class="service-desc">Fresh Windows install with drivers, updates, and essential software configured properly from the start.</div>
         </div>
       </div>
       <div class="service-row">
-        <div class="service-dot"></div>
+        <div class="service-prefix">[04]</div>
         <div>
           <div class="service-name">Driver &amp; Update Issues</div>
           <div class="service-desc">Resolve failed updates, missing drivers, and compatibility problems.</div>
@@ -433,28 +891,32 @@
     </div>
   </div>
 
+  <!-- Networking -->
   <div class="section">
     <div class="section-header">
-      <div class="section-tag">Networking</div>
-      <div class="section-line"></div>
+      <div class="section-index">02</div>
+      <div class="section-title-wrap">
+        <span class="section-name">Networking</span>
+        <span class="section-count">3 services</span>
+      </div>
     </div>
     <div class="service-grid">
       <div class="service-row">
-        <div class="service-dot"></div>
+        <div class="service-prefix">[01]</div>
         <div>
           <div class="service-name">Wi-Fi Troubleshooting</div>
           <div class="service-desc">Diagnose dead zones, dropped connections, and slow speeds. Router placement and configuration advice.</div>
         </div>
       </div>
       <div class="service-row">
-        <div class="service-dot"></div>
+        <div class="service-prefix">[02]</div>
         <div>
           <div class="service-name">Router &amp; Modem Setup</div>
           <div class="service-desc">New equipment setup, ISP configuration, guest networks, and basic security hardening.</div>
         </div>
       </div>
       <div class="service-row">
-        <div class="service-dot"></div>
+        <div class="service-prefix">[03]</div>
         <div>
           <div class="service-name">Home Network Organization</div>
           <div class="service-desc">Device management, parental controls, network-wide ad blocking, and general cleanup.</div>
@@ -463,28 +925,32 @@
     </div>
   </div>
 
+  <!-- Hardware -->
   <div class="section">
     <div class="section-header">
-      <div class="section-tag">Hardware</div>
-      <div class="section-line"></div>
+      <div class="section-index">03</div>
+      <div class="section-title-wrap">
+        <span class="section-name">Hardware</span>
+        <span class="section-count">3 services</span>
+      </div>
     </div>
     <div class="service-grid">
       <div class="service-row">
-        <div class="service-dot"></div>
+        <div class="service-prefix">[01]</div>
         <div>
           <div class="service-name">RAM &amp; SSD Upgrades</div>
           <div class="service-desc">Source and install compatible components. One of the best bang-for-buck upgrades for older machines.</div>
         </div>
       </div>
       <div class="service-row">
-        <div class="service-dot"></div>
+        <div class="service-prefix">[02]</div>
         <div>
           <div class="service-name">Peripheral Setup</div>
           <div class="service-desc">Printers, monitors, external drives, webcams — properly configured and tested.</div>
         </div>
       </div>
       <div class="service-row">
-        <div class="service-dot"></div>
+        <div class="service-prefix">[03]</div>
         <div>
           <div class="service-name">Data Backup &amp; Transfer</div>
           <div class="service-desc">Set up reliable local or cloud backup. Migrate data between old and new machines.</div>
@@ -493,28 +959,32 @@
     </div>
   </div>
 
+  <!-- Education -->
   <div class="section">
     <div class="section-header">
-      <div class="section-tag">Education &amp; Guidance</div>
-      <div class="section-line"></div>
+      <div class="section-index">04</div>
+      <div class="section-title-wrap">
+        <span class="section-name">Education &amp; Guidance</span>
+        <span class="section-count">3 services</span>
+      </div>
     </div>
     <div class="service-grid">
       <div class="service-row">
-        <div class="service-dot"></div>
+        <div class="service-prefix">[01]</div>
         <div>
           <div class="service-name">Device Walkthroughs</div>
           <div class="service-desc">One-on-one sessions for laptops, tablets, and smartphones. Learn at your pace, no judgment.</div>
         </div>
       </div>
       <div class="service-row">
-        <div class="service-dot"></div>
+        <div class="service-prefix">[02]</div>
         <div>
           <div class="service-name">Security &amp; Scam Awareness</div>
           <div class="service-desc">Recognize phishing, set up strong passwords, and understand what to actually worry about online.</div>
         </div>
       </div>
       <div class="service-row">
-        <div class="service-dot"></div>
+        <div class="service-prefix">[03]</div>
         <div>
           <div class="service-name">Email, Cloud &amp; Password Setup</div>
           <div class="service-desc">Gmail, iCloud, OneDrive, password managers — properly set up and explained so you're not locked out.</div>
@@ -527,11 +997,16 @@
     <strong>Not sure if your issue is on the list?</strong> Reach out anyway. If it's something I can't handle, I'll tell you straight and point you in the right direction — no charge for that conversation.
   </div>
 
+  <!-- Footer -->
   <div class="footer">
-    <div class="footer-contact">
-      Contact: <span><a href="mailto:greystacktech@gmail.com" style="color: var(--accent); text-decoration: none;">greystacktech@gmail.com</a></span>
+    <div class="footer-left">
+      <div class="footer-label">// get_in_touch</div>
+      <div class="footer-email"><span class="label">Contact: </span><a href="mailto:greystacktech@gmail.com">greystacktech@gmail.com</a></div>
     </div>
-    <div class="footer-note">// Serving the Charleston, SC Area</div>
+    <div class="footer-right">
+      <span class="footer-brand">GREYSTACK</span>
+      <span class="footer-region">// Serving the Charleston, SC Area</span>
+    </div>
   </div>
 
 </div>
@@ -539,22 +1014,38 @@
 <!-- On-Site Modal -->
 <div class="modal-overlay" id="modal-onsite" onclick="closeOnOverlay(event, 'onsite')">
   <div class="modal">
-    <div class="modal-tag">// On-Site Visit</div>
-    <h2>Schedule a Visit</h2>
-    <p>Send an email to get started. Include a brief description of your issue and your availability and we'll get something on the calendar.</p>
-    <a class="modal-btn" href="mailto:greystacktech@gmail.com?subject=On-Site Visit Request&body=Hello,%0D%0A%0D%0AI'd like to schedule an on-site visit.%0D%0A%0D%0AIssue description:%0D%0A%0D%0APhone Number:%0D%0A%0D%0AAvailability:%0D%0A%0D%0AThanks">Open Email App</a>
-    <button class="modal-close" onclick="closeModal('onsite')">Cancel</button>
+    <div class="modal-titlebar">
+      <span class="modal-titlebar-label">// schedule_session.sh</span>
+      <div class="modal-titlebar-dots">
+        <span></span><span></span><span></span>
+      </div>
+    </div>
+    <div class="modal-body">
+      <div class="modal-cmd">$ ./schedule <span>--type=onsite --rate=75/hr</span></div>
+      <h2>Schedule a Visit</h2>
+      <p>Send an email to get started. Include a brief description of your issue and your availability and we'll get something on the calendar.</p>
+      <a class="modal-btn" href="mailto:greystacktech@gmail.com?subject=On-Site Visit Request&body=Hi Greystack,%0D%0A%0D%0AI'd like to schedule an on-site visit.%0D%0A%0D%0AIssue description:%0D%0A%0D%0AAvailability:%0D%0A%0D%0APhone number:%0D%0A%0D%0AThanks">// OPEN EMAIL CLIENT</a>
+      <button class="modal-close" onclick="closeModal('onsite')">[ ESC ] Cancel</button>
+    </div>
   </div>
 </div>
 
 <!-- Consult Modal -->
 <div class="modal-overlay" id="modal-consult" onclick="closeOnOverlay(event, 'consult')">
   <div class="modal">
-    <div class="modal-tag">// Free Initial Consult</div>
-    <h2>Book a Free Consult</h2>
-    <p>Not sure what you need? No problem. Send an email with a quick description of what's going on and we'll figure it out together — no charge.</p>
-    <a class="modal-btn" href="mailto:greystacktech@gmail.com?subject=Free Consultation Request&body=Hello,%0D%0A%0D%0AI'd like to schedule a free consultation.%0D%0A%0D%0AWhat's going on:%0D%0A%0D%0APhone Number:%0D%0A%0D%0AAvailability:%0D%0A%0D%0AThanks">Open Email App</a>
-    <button class="modal-close" onclick="closeModal('consult')">Cancel</button>
+    <div class="modal-titlebar">
+      <span class="modal-titlebar-label">// book_consult.sh</span>
+      <div class="modal-titlebar-dots">
+        <span></span><span></span><span></span>
+      </div>
+    </div>
+    <div class="modal-body">
+      <div class="modal-cmd">$ ./schedule <span>--type=consult --rate=free</span></div>
+      <h2>Free Consult</h2>
+      <p>Not sure what you need? No problem. Send an email with a quick description of what's going on and we'll figure it out together — no charge.</p>
+      <a class="modal-btn" href="mailto:greystacktech@gmail.com?subject=Free Consultation Request&body=Hi Greystack,%0D%0A%0D%0AI'd like to schedule a free consultation.%0D%0A%0D%0AWhat's going on:%0D%0A%0D%0AAvailability:%0D%0A%0D%0APhone number:%0D%0A%0D%0AThanks">// OPEN EMAIL CLIENT</a>
+      <button class="modal-close" onclick="closeModal('consult')">[ ESC ] Cancel</button>
+    </div>
   </div>
 </div>
 
