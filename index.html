@@ -863,10 +863,10 @@
         </div>
         <div class="nav-menu" id="nav-menu">
           <div class="nav-menu-label">// jump_to_section</div>
-          <a class="nav-item" onclick="scrollTo('section-windows')"><span class="nav-item-index">01</span> Windows Support</a>
-          <a class="nav-item" onclick="scrollTo('section-networking')"><span class="nav-item-index">02</span> Networking</a>
-          <a class="nav-item" onclick="scrollTo('section-hardware')"><span class="nav-item-index">03</span> Hardware</a>
-          <a class="nav-item" onclick="scrollTo('section-education')"><span class="nav-item-index">04</span> Education &amp; Guidance</a>
+          <a class="nav-item" onclick="jumpToSection('section-windows')"><span class="nav-item-index">01</span> Windows Support</a>
+          <a class="nav-item" onclick="jumpToSection('section-networking')"><span class="nav-item-index">02</span> Networking</a>
+          <a class="nav-item" onclick="jumpToSection('section-hardware')"><span class="nav-item-index">03</span> Hardware</a>
+          <a class="nav-item" onclick="jumpToSection('section-education')"><span class="nav-item-index">04</span> Education &amp; Guidance</a>
         </div>
       </div>
       <div>
@@ -1123,7 +1123,7 @@
     icon.classList.toggle('open');
   }
 
-  function scrollTo(id) {
+  function jumpToSection(id) {
     const el = document.getElementById(id);
     if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
     document.getElementById('nav-menu').classList.remove('open');
