@@ -831,6 +831,50 @@
     .footer { flex-direction: column; align-items: flex-start; }
     .footer-right { text-align: left; }
   }
+
+  /* Floating book button */
+  .float-book {
+    position: fixed;
+    bottom: 28px;
+    right: 28px;
+    z-index: 2000;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: var(--cyan);
+    color: #020408;
+    font-family: var(--display);
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    padding: 12px 18px;
+    border: none;
+    cursor: pointer;
+    opacity: 0;
+    pointer-events: none;
+    transform: translateY(12px);
+    transition: opacity 0.3s ease, transform 0.3s ease, box-shadow 0.2s;
+  }
+
+  .float-book.visible {
+    opacity: 1;
+    pointer-events: all;
+    transform: translateY(0);
+  }
+
+  .float-book:hover {
+    box-shadow: 0 0 24px rgba(0,229,255,0.5);
+  }
+
+  .float-book-arrow {
+    font-size: 14px;
+    line-height: 1;
+  }
+
+  @media (max-width: 540px) {
+    .float-book { bottom: 16px; right: 16px; padding: 10px 14px; font-size: 9px; }
+  }
 </style>
 </head>
 <body>
@@ -897,7 +941,7 @@
   </div>
 
   <!-- Pricing -->
-  <div class="pricing">
+  <div class="pricing" id="section-pricing">
     <div class="rate-card primary" onclick="openModal('onsite')">
       <div class="rate-index">// RATE_01</div>
       <div class="rate-amount">$75/hr</div>
@@ -1115,6 +1159,10 @@
   </div>
 </div>
 
+<button class="float-book" id="float-book" onclick="jumpToSection('section-pricing')">
+  <span class="float-book-arrow">↑</span> Book a Visit
+</button>
+
 <script>
   function toggleNav() {
     const menu = document.getElementById('nav-menu');
@@ -1135,6 +1183,15 @@
         !document.getElementById('nav-menu').contains(e.target)) {
       document.getElementById('nav-menu').classList.remove('open');
       document.getElementById('nav-toggle').classList.remove('open');
+    }
+  });
+
+  const floatBtn = document.getElementById('float-book');
+  window.addEventListener('scroll', function() {
+    if (window.scrollY > 300) {
+      floatBtn.classList.add('visible');
+    } else {
+      floatBtn.classList.remove('visible');
     }
   });
 
