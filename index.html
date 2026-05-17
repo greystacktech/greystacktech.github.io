@@ -143,6 +143,11 @@
     gap: 14px;
   }
 
+  /* Nav dropdown */
+  .nav-dropdown {
+    position: relative;
+  }
+
   .brand-icon {
     width: 28px;
     height: 28px;
@@ -150,13 +155,63 @@
     display: grid;
     place-items: center;
     position: relative;
+    cursor: pointer;
+    background: transparent;
+    transition: background 0.2s, box-shadow 0.2s;
   }
 
-  .brand-icon::before {
-    content: '>';
-    font-size: 14px;
+  .brand-icon:hover, .brand-icon.open {
+    background: rgba(0,229,255,0.12);
+    box-shadow: 0 0 10px rgba(0,229,255,0.3);
+  }
+
+  .nav-menu {
+    display: none;
+    position: absolute;
+    top: calc(100% + 8px);
+    left: 0;
+    background: #0d1f2d;
+    border: 1px solid var(--border-bright);
+    min-width: 220px;
+    z-index: 2000;
+    overflow: hidden;
+  }
+
+  .nav-menu.open { display: block; }
+
+  .nav-menu-label {
+    font-family: var(--mono);
+    font-size: 8px;
+    color: var(--dim);
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    padding: 8px 14px 6px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .nav-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 14px;
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--muted);
+    letter-spacing: 0.08em;
+    cursor: pointer;
+    border-bottom: 1px solid var(--border);
+    transition: background 0.15s, color 0.15s;
+    text-decoration: none;
+  }
+
+  .nav-item:last-child { border-bottom: none; }
+  .nav-item:hover { background: rgba(0,229,255,0.08); color: var(--cyan); }
+
+  .nav-item-index {
+    font-size: 9px;
     color: var(--cyan);
-    text-shadow: 0 0 8px var(--cyan);
+    opacity: 0.7;
+    flex-shrink: 0;
   }
 
   .brand-name {
@@ -802,7 +857,18 @@
   </div>
   <div class="chrome-row2">
     <div class="chrome-brand">
-      <div class="brand-icon"></div>
+      <div class="nav-dropdown">
+        <div class="brand-icon" id="nav-toggle" onclick="toggleNav()" title="Jump to section">
+          <span style="font-size:14px;color:var(--cyan);text-shadow:0 0 8px var(--cyan);">&#62;</span>
+        </div>
+        <div class="nav-menu" id="nav-menu">
+          <div class="nav-menu-label">// jump_to_section</div>
+          <a class="nav-item" onclick="scrollTo('section-windows')"><span class="nav-item-index">01</span> Windows Support</a>
+          <a class="nav-item" onclick="scrollTo('section-networking')"><span class="nav-item-index">02</span> Networking</a>
+          <a class="nav-item" onclick="scrollTo('section-hardware')"><span class="nav-item-index">03</span> Hardware</a>
+          <a class="nav-item" onclick="scrollTo('section-education')"><span class="nav-item-index">04</span> Education &amp; Guidance</a>
+        </div>
+      </div>
       <div>
         <div class="brand-name">GREYSTACK</div>
         <div class="brand-ver">// IT SUPPORT SERVICES v1.0</div>
@@ -851,7 +917,7 @@
   </div>
 
   <!-- Windows Support -->
-  <div class="section">
+  <div class="section" id="section-windows">
     <div class="section-header">
       <div class="section-index">01</div>
       <div class="section-title-wrap">
@@ -892,7 +958,7 @@
   </div>
 
   <!-- Networking -->
-  <div class="section">
+  <div class="section" id="section-networking">
     <div class="section-header">
       <div class="section-index">02</div>
       <div class="section-title-wrap">
@@ -926,7 +992,7 @@
   </div>
 
   <!-- Hardware -->
-  <div class="section">
+  <div class="section" id="section-hardware">
     <div class="section-header">
       <div class="section-index">03</div>
       <div class="section-title-wrap">
@@ -960,7 +1026,7 @@
   </div>
 
   <!-- Education -->
-  <div class="section">
+  <div class="section" id="section-education">
     <div class="section-header">
       <div class="section-index">04</div>
       <div class="section-title-wrap">
@@ -1050,6 +1116,28 @@
 </div>
 
 <script>
+  function toggleNav() {
+    const menu = document.getElementById('nav-menu');
+    const icon = document.getElementById('nav-toggle');
+    menu.classList.toggle('open');
+    icon.classList.toggle('open');
+  }
+
+  function scrollTo(id) {
+    const el = document.getElementById(id);
+    if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    document.getElementById('nav-menu').classList.remove('open');
+    document.getElementById('nav-toggle').classList.remove('open');
+  }
+
+  document.addEventListener('click', function(e) {
+    if (!document.getElementById('nav-toggle').contains(e.target) &&
+        !document.getElementById('nav-menu').contains(e.target)) {
+      document.getElementById('nav-menu').classList.remove('open');
+      document.getElementById('nav-toggle').classList.remove('open');
+    }
+  });
+
   function openModal(type) {
     document.getElementById('modal-' + type).classList.add('open');
     document.body.style.overflow = 'hidden';
